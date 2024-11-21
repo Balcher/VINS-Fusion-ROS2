@@ -21,6 +21,15 @@
   - [Ceres Solver-2.1.0](http://ceres-solver.org/installation.html) (you can refer [here](https://github.com/zinuok/VINS-Fusion#-ceres-solver-1); just edit 1.14.0 to 2.1.0 for install.)
   - [Eigen-3.3.9](https://github.com/zinuok/VINS-Fusion#-eigen-1)
 
+- **2024.11.21 Successfully Compiled and Running Version**
+  - **System**: 
+    - Ubuntu 22.04
+    - ROS2 Humble
+  - **Libraries**: 
+    - OpenCV 4.5(without cuda)
+    - glog v0.7.0(Ceres-Solver Compilation Requirements)
+    - Ceres-Solver-2.1.0
+    - eigen 3.4.0
 
 ### sensor setup
 - camera: Intel realsense D435i
