@@ -940,6 +940,7 @@ void PoseGraph::savePoseGraph()
         Vector3d VIO_tmp_T = (*it)->vio_T_w_i;
         Vector3d PG_tmp_T = (*it)->T_w_i;
 
+#if 0
         // 将关键帧信息写入文件，包括索引、时间戳、VIO和PG姿态、回环索引和回环信息
         fprintf(pFile, " %d %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %d %f %f %f %f %f %f %f %f %d\n", (*it)->index, (*it)->time_stamp,
                 VIO_tmp_T.x(), VIO_tmp_T.y(), VIO_tmp_T.z(),
@@ -950,6 +951,15 @@ void PoseGraph::savePoseGraph()
                 (*it)->loop_info(0), (*it)->loop_info(1), (*it)->loop_info(2), (*it)->loop_info(3),
                 (*it)->loop_info(4), (*it)->loop_info(5), (*it)->loop_info(6), (*it)->loop_info(7),
                 (int)(*it)->keypoints.size());
+#endif
+
+#if 1
+        // 以 TUM 格式写入文件
+        fprintf(pFile, "%f %f %f %f %f %f %f %f\n",
+                (*it)->time_stamp,
+                VIO_tmp_T.x(), VIO_tmp_T.y(), VIO_tmp_T.z(),
+                VIO_tmp_Q.x(), VIO_tmp_Q.y(), VIO_tmp_Q.z(), VIO_tmp_Q.w());
+#endif
 
         // write keypoints, brief_descriptors   vector<cv::KeyPoint> keypoints vector<BRIEF::bitset> brief_descriptors;
         // 保存关键点和描述符

@@ -527,13 +527,14 @@ PinholeFullCamera::liftSphere( const Eigen::Vector2d& p, Eigen::Vector3d& P ) co
 
 /**
  * \brief Lifts a point from the image plane to its projective ray
- *
- * \param p image coordinates
- * \param P coordinates of the projective ray
+ * 将图像平面上的点反投影到三维空间中，考虑镜头畸变的影响
+ * \param p image coordinates                   图像平面上的点
+ * \param P coordinates of the projective ray   反投影后的三维点
  */
 void
 PinholeFullCamera::liftProjective( const Eigen::Vector2d& p, Eigen::Vector3d& P ) const
 {
+    // 相机内参
     double k1 = mParameters.k1( );
     double k2 = mParameters.k2( );
     double k3 = mParameters.k3( );
@@ -550,7 +551,7 @@ PinholeFullCamera::liftProjective( const Eigen::Vector2d& p, Eigen::Vector3d& P 
     double cx  = mParameters.cx( );
     double cy  = mParameters.cy( );
 
-    // Lift points to normalised plane
+    // Lift points to normalised plane 将图像点转换到归一化平面
     double mx_d = ifx * p( 0 ) + m_inv_K13;
     double my_d = ify * p( 1 ) + m_inv_K23;
     double u    = p( 0 );
@@ -560,10 +561,10 @@ PinholeFullCamera::liftProjective( const Eigen::Vector2d& p, Eigen::Vector3d& P 
     double x0   = x;
     double y0   = y;
 
+    // 迭代优化
     double error = std::numeric_limits< double >::max( );
-
-    int max_cnt   = 8; // 5
-    int min_error = 0.01;
+    int max_cnt   = 8; // 5    // 最大迭代次数
+    int min_error = 0.01;      // 最小误差
     for ( int j = 0;; j++ )
     {
         if ( j > max_cnt )
@@ -571,17 +572,20 @@ PinholeFullCamera::liftProjective( const Eigen::Vector2d& p, Eigen::Vector3d& P 
         if ( error < min_error )
             break;
 
+        // 计算径向畸变和切向畸变
         double r2     = x * x + y * y;
         double icdist = ( 1 + ( ( k6 * r2 + k5 ) * r2 + k4 ) * r2 )
                         / ( 1 + ( ( k3 * r2 + k2 ) * r2 + k1 ) * r2 );
         double deltaX = 2 * p1 * x * y + p2 * ( r2 + 2 * x * x );
         double deltaY = p1 * ( r2 + 2 * y * y ) + 2 * p2 * x * y;
 
+        // 更新点的位置
         x = ( x0 - deltaX ) * icdist;
         y = ( y0 - deltaY ) * icdist;
 
         if ( 1 )
         {
+            // 计算重投影误差
             double r4, r6, a1, a2, a3, cdist, icdist2;
             double xd, yd, xd0, yd0;
 
@@ -596,6 +600,7 @@ PinholeFullCamera::liftProjective( const Eigen::Vector2d& p, Eigen::Vector3d& P 
             xd0     = x * cdist * icdist2 + p1 * a1 + p2 * a2;
             yd0     = y * cdist * icdist2 + p1 * a3 + p2 * a1;
 
+            // 计算重投影误差
             double x_proj = xd * fx + cx;
             double y_proj = yd * fy + cy;
 
@@ -603,13 +608,23 @@ PinholeFullCamera::liftProjective( const Eigen::Vector2d& p, Eigen::Vector3d& P 
         }
     }
 
+    // 返回反投影后的三维点
     P << x, y, 1.0;
 }
 
+/**
+ * @brief 将图像平面上的点反投影到三维空间中，考虑图像缩放的影响
+ * 
+ * @param p 图像平面上的点，已经经过缩放处理
+ * @param P 反投影后的三维点
+ * @param image_scale 图像缩放比例
+ */
 void
 PinholeFullCamera::liftProjective( const Eigen::Vector2d& p, Eigen::Vector3d& P, float image_scale ) const
 {
+    // 将缩放后的点还原为原始尺寸
     Eigen::Vector2d p_tmp = p / image_scale; // p_tmp is without resize, p is with resize
+    // 使用原始尺寸的点进行反投影
     liftProjective( p_tmp, P );              // p_tmp is without resize
 }
 

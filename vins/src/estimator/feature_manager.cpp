@@ -14,6 +14,9 @@ int FeaturePerId::endFrame()
     return start_frame + feature_per_frame.size() - 1;
 }
 
+// 初始化类的成员变量
+// 接受一个旋转矩阵数组作为参数
+// _Rs[]: 输入的旋转矩阵数组，类型为 Matrix3d（通常表示 3x3 的旋转矩阵）
 FeatureManager::FeatureManager(Matrix3d _Rs[])
     : Rs(_Rs)
 {
@@ -256,6 +259,17 @@ bool FeatureManager::solvePoseByPnP(Eigen::Matrix3d &R, Eigen::Vector3d &P,
     return true;
 }
 
+/**
+ * @brief 使用pnp算法初始化当前帧的位姿
+ * 
+ * 该函数通过 PnP 算法，根据已知的 3D 点和对应的 2D 点，计算当前帧的位姿（旋转矩阵 R 和位置向量 P）。
+ * 
+ * @param frameCnt 当前帧的索引
+ * @param Ps 位置向量数组，存储每个帧的位置
+ * @param Rs 旋转矩阵数组，存储每个帧的旋转
+ * @param tic 相机到IMU的平移向量
+ * @param ric 相机到IMU的旋转矩阵
+ */
 void FeatureManager::initFramePoseByPnP(int frameCnt, Vector3d Ps[], Matrix3d Rs[], Vector3d tic[], Matrix3d ric[])
 {
 

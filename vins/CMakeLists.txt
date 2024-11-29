@@ -4,7 +4,7 @@ project(vins)
 set(CMAKE_CXX_STANDARD 14)
 add_compile_options(-Wextra -Wpedantic)
 
-set(CMAKE_BUILD_TYPE Release)
+set(CMAKE_BUILD_TYPE debug)
 
 # find dependencies
 find_package(ament_cmake REQUIRED)

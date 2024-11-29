@@ -3,7 +3,7 @@ project(loop_fusion)
 
 set(CMAKE_CXX_STANDARD 14)
 add_compile_options( -Wextra -Wpedantic) # -Wall : print warning
-set(CMAKE_BUILD_TYPE Release)
+set(CMAKE_BUILD_TYPE DEBUG)
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
@@ -22,8 +22,6 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 find_package(Eigen3)
 
 include_directories( ${CERES_INCLUDE_DIRS}  ${EIGEN3_INCLUDE_DIR}) #${catkin_INCLUDE_DIRS})
-
-
 
 add_executable(loop_fusion_node
     src/pose_graph_node.cpp
